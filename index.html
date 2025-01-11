@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>音楽薬局</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f8ff;
+            color: #333;
+        }
+        header {
+            background-color: #48a868;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-family: 'Lora', serif;
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #3b7a56;
+            padding: 10px 0;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 18px;
+            font-family: 'Roboto', sans-serif;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        .content {
+            padding: 20px;
+            text-align: center;
+        }
+        footer {
+            background-color: #48a868;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+        .questionnaire {
+            margin-top: 20px;
+            text-align: left;
+        }
+        .questionnaire form {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .questionnaire label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+        .questionnaire select,
+        .questionnaire button {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .questionnaire button {
+            background: linear-gradient(90deg, #48a868, #3b7a56);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .questionnaire button:hover {
+            background: linear-gradient(90deg, #3b7a56, #48a868);
+        }
+        #recommendation {
+            margin-top: 40px;
+            font-size: 28px;
+            font-weight: bold;
+            color: white;
+            background-color: #3b7a56;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            animation: fadeIn 1s ease-in-out;
+        }
+        #youtubeLink {
+            margin-top: 20px;
+            font-size: 18px;
+            text-align: center;
+            margin-bottom: 40px; /* YouTube埋め込みの下に余白を追加 */
+        }
+        #youtubeLink iframe {
+            margin-top: 10px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>音楽薬局</h1>
+        <p>心と体を癒す音楽の処方箋</p>
+    </header>
+
+    <nav>
+        <a href="#about">私たちについて</a>
+        <a href="#questionnaire">気分診断</a>
+    </nav>
+
+    <div class="content">
+        <section id="about">
+            <h2>私たちについて</h2>
+            <p>音楽薬局は、心と体を癒すための音楽を提案するサービスです。<br>あなたの気分や状況に合わせて最適な音楽を見つけるお手伝いをします。</p>
+        </section>
+
+    <div class="content">
+        <section id="questionnaire">
+            <h2>気分診断</h2>
+            <p>以下の質問に答えて、今の気分にぴったりの音楽を見つけましょう。</p>
+            <div class="questionnaire">
+                <form id="moodForm">
+                    <label for="mood">今の気分を一番表している言葉を選んでください:</label>
+                    <select id="mood" name="mood" required>
+                        <option value="">選択してください</option>
+                        <option value="a">楽しい</option>
+                        <option value="i">落ち込んでいる</option>
+                        <option value="u">失恋した</option>
+                        <option value="e">イライラしている</option>
+                    </select>
+
+                    <label for="genre">今している活動を選んでください:</label>
+                    <select id="genre" name="genre" required>
+                        <option value="">選択してください</option>
+                        <option value="o">リラックス</option>
+                        <option value="ka">勉強中</option>
+                        <option value="ki">ひま</option>
+                    </select>
+
+                    <label for="activity">好きな音楽のジャンルを教えてください:</label>
+                    <select id="activity" name="activity" required>
+                        <option value="">選択してください</option>
+                        <option value="ku">Jpop</option>
+                        <option value="ke">邦楽</option>
+                        <option value="ko">BGM</option>
+                    </select>
+
+                    <button type="button" onclick="recommendMusic()">診断する</button>
+                </form>
+                <div id="recommendation"></div>
+                <div id="youtubeLink"></div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 音楽薬局. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function recommendMusic() {
+            const mood = document.getElementById('mood').value;
+            const genre = document.getElementById('genre').value;
+            const activity = document.getElementById('activity').value;
+            let recommendation = '';
+            let youtubeEmbed = '';
+
+            if (mood && genre && activity) {
+                const key = `${mood}-${genre}-${activity}`;
+
+                const combinations = {
+                    "a-o-ku": { text: "気分高揚なあなたの気分に合う音楽はこちらです！", youtube: "https://www.youtube.com/embed/_0972HfmXO0" },
+                    "a-o-ke": { text: "気分高揚なあなたに合う音楽はこちらです！", youtube: "https://www.youtube.com/embed/YEA1ROHi0Eg" },
+                    "a-o-ko": { text: "気分高揚なあなたの気分に合う音楽はこちらです！", youtube: "https://www.youtube.com/embed/FyhBZmnxTVM" },
+                    "a-ka-ku": { text: "気分よく勉強できる音楽はこちらです！", youtube: "https://www.youtube.com/embed/JoJ6lnF07U4" },
+　　　　　　　　　　"a-ka-ke": { text: "気分よく勉強できる音楽はこちらです！", youtube: "https://www.youtube.com/embed/ATK7gAaZTOM" },
+　　　　　　　　　　"a-ka-ko": { text: "気分よく勉強できる音楽はこちらです！", youtube: "https://www.youtube.com/embed/HWsOivtPz-o" },
+　　　　　　　　　　"a-ki-ku": { text: "ひまなあなたに合う音楽はこちらです！", youtube: "https://www.youtube.com/embed/sk1Z-Hqwwog" },
+　　　　　　　　　　"a-ki-ke": { text: "ひまなあなたに合う音楽はこちらです！", youtube: "https://www.youtube.com/embed/f6YDKF0LVWw" },
+　　　　　　　　　　"a-ki-ko": { text: "ひまなあなたに合う音楽はこちらです！", youtube: "https://www.youtube.com/embed/q-tTJlz79_c" },
+　　　　　　　　　　"i-o-ku": { text: "この曲をきいてリラックスしましょう！", youtube: "https://www.youtube.com/embed/TkHcaAVQoiI" },
+　　　　　　　　　　"i-o-ke": { text: "この曲をきいてリラックスしましょう！", youtube: "https://www.youtube.com/embed/" },
+　　　　　　　　　　"i-o-ko": { text: "この曲をきいてリラックスしましょう！", youtube: "https://www.youtube.com/embed/fJ9rUzIMcZQ" },
+　　　　　　　　　　"i-ka-ku": { text: "勉強のお手伝いをします！", youtube: "https://www.youtube.com/embed/fJ9rUzIMcZQ" },
+　　　　　　　　　　"i-ka-ke": { text: "勉強のお手伝いをします！", youtube: "https://www.youtube.com/embed/fJ9rUzIMcZQ" },
+　　　　　　　　　　"i-ka-ko": { text: "勉強のお手伝いをします！", youtube: "https://www.youtube.com/embed/fJ9rUzIMcZQ" },
+　　　　　　　　　　"i-ki-ku": { text: "この曲があなたを落ち着かせます！", youtube: "https://www.youtube.com/embed/fJ9rUzIMcZQ" },
+　　　　　　　　　　"i-ki-ke": { text: "この曲があなたを落ち着かせます！", youtube: "https://www.youtube.com/embed/fJ9rUzIMcZQ" },
+　　　　　　　　　　"i-ki-ko": { text: "この曲があなたを落ち着かせます！", youtube: "https://www.youtube.com/embed/fJ9rUzIMcZQ" },
+　　　　　　　　　　"u-o-ku": { text: "失恋したあなたに合う音楽はこちらです！", youtube: "https://www.youtube.com/embed/nvQN56D8RYo" },
+　　　　　　　　　　"u-o-ke": { text: "失恋したあなたに合う音楽はこちらです！", youtube: "https://www.youtube.com/embed/QjrkrVmC-8M" },
+　　　　　　　　　　"u-o-ko": { text: "失恋したあなたに合う音楽はこちらです！", youtube: "https://www.youtube.com/embed/fJ9rUzIMcZQ" },
+　　　　　　　　　　"u-ka-ku": { text: "失恋をした時こそ勉強です！", youtube: "https://www.youtube.com/embed/fJ9rUzIMcZQ" },
+　　　　　　　　　　"u-ka-ke": { text: "失恋をした時こそ勉強です！", youtube: "https://www.youtube.com/embed/fJ9rUzIMcZQ" },
+　　　　　　　　　　"u-ka-ko": { text: "失恋をした時こそ勉強です！", youtube: "https://www.youtube.com/embed/fJ9rUzIMcZQ" },
+　　　　　　　　　　"u-ki-ku": { text: "失恋をした時こそ音楽をききましょう！", youtube: "https://www.youtube.com/embed/fJ9rUzIMcZQ" },
+　　　　　　　　　　"u-ki-ke": { text: "失恋をした時こそ音楽をききましょう！", youtube: "https://www.youtube.com/embed/fJ9rUzIMcZQ" },
+　　　　　　　　　　"u-ki-ko": { text: "失恋をした時こそ音楽をききましょう！", youtube: "https://www.youtube.com/embed/fJ9rUzIMcZQ" },
+　　　　　　　　　　"e-o-ku": { text: "いらいらしているときは音楽をききましょう！", youtube: "https://www.youtube.com/embed/fJ9rUzIMcZQ" },
+　　　　　　　　　　"e-o-ke": { text: "いらいらしているときは音楽をききましょう！", youtube: "https://www.youtube.com/embed/fJ9rUzIMcZQ" },
+　　　　　　　　　　"e-o-ko": { text: "いらいらしているときは音楽をききましょう！", youtube: "https://www.youtube.com/embed/fJ9rUzIMcZQ" },
+　　　　　　　　　　"e-ka-ku": { text: "勉強をしているあなたにおすすめな曲はこちらです！", youtube: "https://www.youtube.com/embed/fJ9rUzIMcZQ" },
+　　　　　　　　　　"e-ka-ke": { text: "勉強をしているあなたにおすすめな曲はこちらです！", youtube: "https://www.youtube.com/embed/fJ9rUzIMcZQ" },
+　　　　　　　　　　"e-ka-ko": { text: "勉強をしているあなたにおすすめな曲はこちらです！", youtube: "https://www.youtube.com/embed/fJ9rUzIMcZQ" },
+　　　　　　　　　　"e-ki-ku": { text: "この曲をきいてストレスを発散しましょう！", youtube: "https://www.youtube.com/embed/fJ9rUzIMcZQ" },
+                      "e-ki-ke": { text: "イライラしているときこそ音楽をききましょう！", youtube: "https://www.youtube.com/embed/fJ9rUzIMcZQ" },
+                    "e-ki-ko": { text: "イライラしているときこそ音楽をききましょう！", youtube: "https://www.youtube.com/embed/5qap5aO4i9A" }
+                };
+
+                if (combinations[key]) {
+                    recommendation = combinations[key].text;
+                    youtubeEmbed = `<iframe width="560" height="315" src="${combinations[key].youtube}" frameborder="0" allowfullscreen></iframe>`;
+                } else {
+                    recommendation = "お探しの音楽が見つかりませんでしたが、他のおすすめをどうぞ！";
+                    youtubeEmbed = '<iframe width="560" height="315" src="https://www.youtube.com/embed/5qap5aO4i9A" frameborder="0" allowfullscreen></iframe>';
+                }
+
+                document.getElementById('recommendation').innerHTML = recommendation;
+                document.getElementById('youtubeLink').innerHTML = youtubeEmbed;
+            } else {
+                document.getElementById('recommendation').innerHTML = 'すべての質問に回答してください。';
+                document.getElementById('youtubeLink').innerHTML = '';
+            }
+        }
+    </script>
+</body>
+</html>
